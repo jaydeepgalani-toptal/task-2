@@ -10,22 +10,21 @@ RUN apt-get update \
     && npm install -g @openai/codex@latest \
     && ln -sf "$(which node)" /usr/local/bin/node \
     && ln -sf "$(which codex)" /usr/local/bin/codex \
-    && python -m pip install --no-cache-dir requests beautifulsoup4 packaging pytest==8.4.1 \
+    && python -m pip install --no-cache-dir pyyaml python-dateutil pytest \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd --create-home --shell /bin/bash agent
 
-COPY payload/project /workspace
-COPY payload/forum /opt/localforum
+COPY payload/etl_project /workspace/etl
+COPY payload/etl_support /opt/etl_support
 
-RUN chmod +x /workspace/bin/download-mods \
-    && chmod +x /opt/localforum/forum_serverctl \
-    && ln -sf /opt/localforum/forum_serverctl /usr/local/bin/forum-serverctl \
-    && cp /opt/localforum/forum_env.sh /etc/profile.d/forum_env.sh \
-    && python /opt/localforum/generate_forum_assets.py \
-    && python /opt/localforum/sanity_check.py \
-    && python /opt/localforum/build_manifest.py \
-    && chown -R agent:agent /workspace
+RUN mkdir -p /workspace/etl/data/vendor_exports /workspace/etl/out \
+    && python /opt/etl_support/generate_inputs.py \
+    && python -m pip install --no-cache-dir -e /workspace/etl \
+    && python /opt/etl_support/sanity_check.py \
+    && python /opt/etl_support/build_manifest.py \
+    && chmod +x /workspace/etl/bin/run-load \
+    && chown -R agent:agent /workspace/etl
 
-WORKDIR /workspace
+WORKDIR /workspace/etl
 USER agent

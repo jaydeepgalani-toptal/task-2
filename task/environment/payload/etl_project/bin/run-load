@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from modsync.cli import main
+from loader.cli import main
 
 
 if __name__ == "__main__":
