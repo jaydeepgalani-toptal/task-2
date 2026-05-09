@@ -13,4 +13,4 @@ Expected solution path:
 - Inspect the local forum pages carefully, including replies and badges.
 - Fix the dependency walker so replies participate, dependency constraints accumulate, and optional/source/media attachments do not become release candidates.
 - Fix version semantics so line locks and wildcard branches become bounded ranges, prereleases are excluded, and exact Linux pins from replies override “latest stable within range”.
-- Rerun the documented command from a clean `downloads/` directory and confirm the five required ZIPs are the only outputs
+- Rerun the documented command from a clean `downloads/` directory and confirm the five required ZIPs are the only outputs.
